@@ -1,0 +1,26 @@
+window.OneSignal = window.OneSignal || [];
+var initOptions = {
+    appId: "14953691-7d6c-40be-8043-4c2c7ac8352c",
+    autoRegister: true,
+    notifyButton: {
+        enable: false
+    }
+};
+
+/*
+ Special Case: Worker files in a subdirectory
+
+ We're hosting on GitHub pages so the worker files can't be uploaded to the root.
+
+ NOTE: This is NOT necessary if you can follow our web push setup guide and upload files to the root.
+ */
+function changeServiceWorkerFilePath() {
+    OneSignal.SERVICE_WORKER_PATH = '/OneSignalSDKWorker.js';
+    OneSignal.SERVICE_UPDATER_WORKER_PATH = '/OneSignalSDKUpdaterWorker.js';
+    OneSignal.SERVICE_WORKER_PARAM = { scope: '/' };
+};
+
+OneSignal.push(function() {
+    changeServiceWorkerFilePath();
+    OneSignal.init(initOptions);
+});
