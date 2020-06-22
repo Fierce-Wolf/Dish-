@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)https://push.petridish.pw/iframe.html?ver=1.25 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="ver" value="1.25">
+    <script src="./onesignal-init.js.загружено"></script>
+    <script src="./OneSignalSDK.js.загружено" async="async"></script>
+    <script src="./jquery-2.1.4.min.js.загружено" async="async"></script>
+    <script>
+        function log() {
+            var args = Array.prototype.slice.call(arguments);
+            args.unshift(location.href + ':');
+            console.log.apply(console, args);
+        }
+        //log('iFrame page loaded and script running.');
+
+        /*function AJAXreq(url, data, callback, errorCallback){
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: url,
+                dataType: 'json',
+                data: data
+            }).done(function (returnedData) {
+                if (callback){
+                    callback(returnedData);
+                }
+            }).error(function(error, data) {
+                if (data){
+                    console.warn('error data', error, data);
+                }
+                if (errorCallback){
+                    errorCallback(data);
+                }
+            });
+        }*/
+
+        /* From: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage#Example */
+        var OneSignal = window.OneSignal || [];
+
+        // Called sometime after postMessage is called
+        function receiveMessage(event) {
+            //log('Received a postMessage message:', event);
+            // Do we trust the sender of this  message?
+
+            // TODO: Be sure to implement this in the future!
+            // if (event.origin !== "a.com" || // event.origin !== "b.com" || // event.origin !== "c.com") // return;
+            // event.source is window.opener
+            // event.data is {command: 'query', extra: {}}
+
+            // Assuming you've verified the origin of the received message (which
+            // you must do in any case), a convenient idiom for replying to a
+            // message is to call postMessage on event.source and provide
+            // event.origin as the targetOrigin.
+            if (event.data.command === 'query') {
+                OneSignal.push(function () {
+                    Promise.all([
+                        OneSignal.isPushNotificationsEnabled(),
+                        //OneSignal.getTags(),
+                        OneSignal.getUserId()
+                    ]).then(function (results) {
+                        //log('Got subscription state, tags, and user ID from iFrame:', results);
+
+
+                        // check if responce is user id
+                        if (results[0] && results[0].length){
+                            // send AJAX request to renew session
+                            /*AJAXreq('https://ytktpmcerfe1mtn1kz.petridish.pw/api/update_push_session', {
+                                pushId: results[0]
+                            });*/
+                        } else {
+                            //log('No results:', results);                            
+                        }
+                    
+
+                        // AJAX end
+                        event.source.postMessage({
+                                    command: 'reply',
+                                    extra: results
+                                },
+                                event.origin);
+                    }).catch(function (e) {
+                        //log('Error in retrieving iframe state:', e);
+                    });
+                });
+
+
+                /*
+                // set some tags
+                OneSignal.push(function() {
+                    log('Setting tag for origin');
+                    var tags = {};
+                    OneSignal.sendTags(tags);
+                });*/
+
+
+            } else if (event.data.command === 'subscribe') {
+                //log("Setting a tag on this user record to mark that he's subscribing on:" , event.data.extra.origin);
+               
+                /*OneSignal.push(function() {
+                    var tags = {};
+                    OneSignal.sendTags(tags);
+                });*/
+            }
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+        OneSignal.push(function() {
+            OneSignal.on('initialize', function() {
+                window.addEventListener("message", receiveMessage, false);
+            });
+        });
+    </script>
+<script src="./OneSignalPageSDKES6.js.загружено" async=""></script></head>
+<body>
+<script>
+
+</script>
+
+</body></html>

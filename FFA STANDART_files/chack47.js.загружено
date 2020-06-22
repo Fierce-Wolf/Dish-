@@ -1,0 +1,1240 @@
+$(document)
+    .ready(function() {
+        $('#howgame').click(function() {
+            var scroll_el = $(this).attr('data-href');
+            if ($(scroll_el).length !== 0) {
+                $('.info-landing').animate({ scrollTop: $(scroll_el).offset().top }, 500);
+            }
+            return false; // выключаем стандартное действие
+        });
+        // Под удаление
+       // var backtogmselectortext = "Выбрать режим";
+       // var gamemodetext = "Режим игры";
+       // var ingamelistopen = false;
+
+        // Цвет и иконка режима в статистике сервера на экране игры
+        function GameModeInfo() {
+            var modeicon = {
+                'SPECIAL': 'icon-special',
+                'FFA': 'icon-ffa',
+                'FF-FFA': 'icon-fastfood',
+                'HC-FFA': 'icon-hardcore',
+                'MS-FFA': 'icon-megasplit',
+                'TEAM': 'icon-team',
+                'CRSPL': 'icon-death',
+                'EXPERIM': 'icon-experimental',
+                'HC-EXP': 'icon-hardcore',
+                'ARENA': 'icon-arena',
+                'FB-ARENA': 'icon-fatboy',
+                'SDISH': 'icon-snake',
+                'C-FFA': 'icon-death',
+                'OSHOT': 'icon-oneshot',
+                'DMATCH': 'icon-death',
+                'S-INVA': 'icon-space',
+                'ZOMBIE': 'icon-death',
+                'VW-FFA': 'icon-virus',
+                'KRAKEN': 'icon-kraken',
+                'B-HOLE': 'icon-black-hole)',
+                'E-F-SPED': 'icon-car',
+                'CLAN-H': 'icon-lock',
+                'MS5K': 'icon-ms5k'
+            };
+            var modeсolor = {
+                'SPECIAL': 'rgba(255, 38, 141, 1)',
+                'FFA': 'rgba(57, 190, 52, 1)',
+                'FF-FFA': 'rgba(57, 190, 52, 1)',
+                'HC-FFA': 'rgba(255, 108, 0, 1)',
+                'MS-FFA': 'rgba(235, 49, 49, 1)',
+                'TEAM': 'rgba(38, 111, 255, 1)',
+                'CRSPL': 'rgba(255, 38, 141, 1)',
+                'EXPERIM': 'rgba(38, 111, 255, 1)',
+                'HC-EXP': 'rgba(235, 49, 49, 1)',
+                'ARENA': 'rgba(255, 108, 0, 1)',
+                'FB-ARENA': 'rgba(57, 190, 52, 1)',
+                'SDISH': 'rgba(38, 111, 255, 1)',
+                'C-FFA': 'rgba(23, 238, 15, 1)',
+                'OSHOT': 'rgba(235, 49, 49, 1)',
+                'DMATCH': 'rgba(255, 38, 141, 1)',
+                'S-INVA': 'rgba(0, 0, 0, 1)',
+                'ZOMBIE': 'rgba(57, 190, 52, 1)',
+                'VW-FFA': 'rgba(23, 238, 15, 1)',
+                'KRAKEN': 'rgba(38, 111, 255, 1)',
+                'B-HOLE': 'rgba(0, 0, 0, 1)',
+                'E-F-SPED': 'rgba(255, 108, 0, 1)',
+                'CLAN-H': 'rgba(235, 49, 49, 1)',
+                'MS5K': 'rgba(255, 108, 0, 1)'
+            };
+            var serverflag = "germany";
+            var servername = "ServerName";
+            $('.serv-mode.mode-icon').addClass(modeicon['EXPERIM']).css({ background: modeсolor['SPECIAL'] });
+            $('.serv-count.flag').addClass(serverflag);
+            $('.serv-name').html(servername);
+        }
+        GameModeInfo()
+            //
+        $('#top-content')
+            .tabs();
+        $('#option-content')
+            .tabs();
+        $('#friend-content')
+            .tabs();
+        $('#top-serv-content')
+            .tabs();
+        // Читаем высоту основного блока
+        function windowSize() {
+            var WindowHeight = $(window).height();
+            var WrapHeight = WindowHeight - 70;
+            var ModeHeight = WrapHeight - 70;
+            if ($('.fill').hasClass('gameover')) {
+                $('.fill.gameover .wrapper').height(590);
+            } else {
+                $('.wrapper')
+                    .css({ height: WrapHeight });
+				$('.wrapper .nav').css({ height: WrapHeight - 30 });
+				$('.option-content-container').css({ height: WrapHeight - 209 });
+                $('.info, div.top, .option, .friend, .top-serv, .info-landing')
+                    .css({ height: ModeHeight });
+                $('.ui-widget-content').css({ height: ModeHeight - 110 });
+            }
+            $('.mode-wrapper, .liked-list')
+                .css({ height: ModeHeight - 70 - 25 });
+            $('.server-list')
+                .css({ height: ModeHeight - 110 });
+        }
+        $(window)
+            .on('load resize', windowSize);
+        // Функция получения заголовков режимов
+        function ModeName() {
+            $('.mode-item')
+                .each(function() {
+                    var mode_name = $(this)
+                        .attr('data-name');
+                    var fulcolor = $(this)
+                        .children('.mode-icon')
+                        .css('color');
+                    // var opacolor = $(this)
+                    //     .children('.mode-icon')
+                    //     .css('background');
+                    $(this)
+                        .children('.mode-text')
+                        .html(mode_name);
+                    $(this)
+                        .attr({ 'data-fcolor': "#fff", 'data-ocolor': fulcolor });
+                });
+        }
+
+        function ModeOnlyName() {
+            $('.mode-item')
+                .each(function() {
+                    var mode_name = $(this)
+                        .attr('data-name');
+                    var fulcolor = $(this)
+                        .children('.mode-icon')
+                        .css('color');
+                    $(this)
+                        .children('.mode-text')
+                        .html(mode_name);
+                });
+        }
+        //Пустые значения
+        ModeName();
+        // Убираем активный сервер
+        function ServerActiveRemove() {
+            $('.server-item')
+                .removeClass('active');
+        }
+        //Функция открытия меню
+        function NavOpen() {
+            $('#nav')
+                .css({ width: "273px" })
+                .addClass('open');
+            $('#nav-button')
+                .removeClass('nav-open')
+                .addClass('nav-close');
+            $('#nav-button i')
+                .removeClass('mdi-menu')
+                .addClass('mdi-close');
+            $('.layout')
+                .css({ position: "relative", left: "240px" });
+            $('.nav-item a .text')
+                .each(function() {
+                    var item_name = $(this)
+                        .attr('data-name');
+                    $(this)
+                        .fadeIn(function() {
+                            $(this)
+                                .html(item_name);
+                        });
+                }); // Выводим названия
+            $('.nav-item a .text')
+                .css({ opacity: "1" });
+            $('#logo')
+                .attr('fill', '#ffffff');
+            $('#nav ul li')
+                .css({ width: "100%" });
+            $('svg #logo')
+                .removeClass("blue")
+                .addClass('white');
+            $('#nav strong')
+                .css({ opacity: "1" });
+        }
+
+        // function NavOpenHirez() {
+        //     $('#logo')
+        //         .attr('fill', '#ffffff');
+        //     $('#nav')
+        //         .css({ width: "273px" });
+        //     $('#nav ul li')
+        //         .css({ width: "100%" });
+        //     $('.nav-item a .text')
+        //         .each(function() {
+        //             var item_name = $(this)
+        //                 .attr('data-name');
+        //             $(this)
+        //                 .fadeIn('fast', function() {
+        //                     $(this)
+        //                         .html(item_name);
+        //                 });
+        //         }); // Выводим названия
+        //     $('.nav-item a .text')
+        //         .animate({ opacity: "1" });
+        // }
+        // Функция закрытия меню
+        function NavClose() {
+            $('#nav')
+                .css({ width: "34px" })
+                .removeClass('open');
+            $('.nav-close i')
+                .removeClass('mdi-close')
+                .addClass('mdi-menu');
+            $('#nav-button')
+                .removeClass('nav-close')
+                .addClass('nav-open');
+            $('#nav strong')
+                .css({ opacity: "0" });
+            $('#logo')
+                .attr('fill', '#266fff');
+            $('#nav ul li')
+                .css({ width: "24px" });
+            $('.nav-item a .text')
+                .empty();
+            $('.nav-item a .text')
+                .css({ opacity: "0" });
+            $('.layout')
+                .css({ left: "0" }, function() {
+                    $(this)
+                        .css({ position: "inherit" });
+                });
+        }
+        //Выводи инфу о сервере
+        function PrintInfoServer() {
+            $('#server-wrapper .server-filtr')
+                .css({ display: "flex" });
+            $('#server-wrapper .server-list')
+                .css({ display: "block" });
+            $('.liked-list')
+                .hide();
+            $('.server-item')
+                .each(function() {
+                    var serv = {
+                        count: $(this).attr('data-country'),
+                        name: $(this).attr('data-name'),
+                        comp: $(this).attr('data-comp'),
+                        phys: $(this).attr('data-phys'),
+                        liked: $(this).attr('data-liked'),
+                        nowplay: $(this).attr('data-nowplay'),
+                        maxplay: $(this).attr('data-maxplay')
+                    }; // Массив данных для серверов
+                    $(this)
+                        .find('span.flag')
+                        .addClass(serv.count); // Присваиваем флаги
+                    $(this)
+                        .find('.server-name')
+                        .html(serv.name); // Присваиваем названия
+                    $(this)
+                        .find('.now')
+                        .html(serv.nowplay); // Пользвателей сейчас
+                    $(this)
+                        .find('.max')
+                        .html(serv.maxplay); // Максисмум пользователей
+                    if (serv.liked >= 1) {
+                        $(this)
+                            .addClass('liked');
+                        $(this)
+                            .find('.mdi-star-outline')
+                            .removeClass('mdi-star-outline')
+                            .addClass('mdi-star');
+                    }
+                });
+        }
+        // Разворачиваем список режимов после сокращения
+        function ModeWrapper() {
+            console.log("ModeWrapper");
+            $('.mode-header .back')
+                .hide();
+            $('.mode-header .liked')
+                .css({ display: "flex" });
+            $('#server-wrapper')
+                .css({ width: "0", display: "none" });
+            $('.wrapper .mode-header strong')
+                .html(gamemodetext); // Меняем заголовок
+            $('#mode-wrapper')
+                .css({ width: "355px" });
+            $('#mode-wrapper ul')
+                .css({ width: "355px" }); // Анимируем и выводим названия серверов
+            $('.mode-item .mode-text').show();
+            ModeOnlyName();
+			history.pushState("", document.title, window.location.pathname + window.location.search);
+        }
+        // Заполняем первый режим и первый сервер
+        $('.liked.auth')
+            .click(function(e) {
+                e.stopPropagation();
+                $('.wrapper .mode-header strong')
+                    .html(favoritestext); // Меняем заголовок
+                $('.mode-header .liked')
+                    .hide(); // Удаляем избранное
+                $('.mode-header')
+                    .addClass('closeliked')
+                    .css({ cursor: "pointer" });
+                $('.mode-header .back')
+                    .css({ display: "flex" }); // Стрелочка назад
+                $('.mode-item .mode-text')
+                    .empty()
+                    .hide(); // Сокращаем названия режимов
+                $('#mode-wrapper')
+                    .css({ width: "32px" }); // Анимируем
+                $('#mode-wrapper ul')
+                    .css({ width: "36px" }); // Анимируем
+                $('#server-wrapper')
+                    .css({ display: "block", width: "320px" }); // Анимируем сервера
+                $('.liked-list')
+                    .css({ display: "block" });
+                $('#server-wrapper .server-filtr')
+                    .hide();
+                $('#server-wrapper .server-list')
+                    .hide();
+                $('.liked-item')
+                    .each(function() {
+                        var liked = {
+                            modeicon: $(this).attr('data-icon'),
+                            modecolor: $(this).attr('data-icon-color'),
+                            servcountry: $(this).attr('data-country'),
+                            servname: $(this).attr('data-name'),
+                            servnowplay: $(this).attr('data-nowplay'),
+                            servmaxplay: $(this).attr('data-maxplay')
+                        };
+                        $(this)
+                            .find('span.mode')
+                            .css({ background: liked.modecolor });
+                        $(this)
+                            .find('span.mode i')
+                            .addClass(liked.modeicon);
+                        $(this)
+                            .find('span.flag')
+                            .addClass(liked.servcountry); // Присваиваем флаги
+                        $(this)
+                            .find('.liked-name')
+                            .html(liked.servname); // Присваиваем названия
+                        $(this)
+                            .find('.now')
+                            .html(liked.servnowplay); // Пользвателей сейчас
+                        $(this)
+                            .find('.max')
+                            .html(liked.servmaxplay); // Максисмум пользователей
+                    });
+                $('.liked-item').click(function() {
+                    var liked = {
+                        modename: $(this).attr('data-mode-name'),
+                        modeinfo: $(this).attr('data-mode-info'),
+                        modeicon: $(this).attr('data-icon'),
+                        modecolor: $(this).attr('data-icon-color'),
+                        modebg: $(this).attr('data-icon-bg'),
+                        servcountry: $(this).attr('data-country'),
+                        servname: $(this).attr('data-name'),
+                        servcomp: $(this).attr('data-comp'),
+                        servphys: $(this).attr('data-phys'),
+                        servnowplay: $(this).attr('data-nowplay'),
+                        servmaxplay: $(this).attr('data-maxplay')
+                    };
+                    $('.liked-item').removeClass('active');
+                    $(this).addClass('active');
+                    $('.info .info-mode-icon')
+                        .css("background", liked.modebg); // Красим большой кружок
+                    $('.info .info-mode-icon i')
+                        .removeClass()
+                        .addClass("mdi")
+                        .addClass(liked.modeicon)
+                        .css("color", liked.modecolor); // Красним иконку
+                    $('.info h2')
+                        .html(liked.modename); // Меняем заголовок
+                    $('.info .discription')
+                        .html(liked.modeinfo); // Меняем описание
+                    // Добавляем иконки
+                    $('.info .options .complexity')
+                        .removeClass('l n h')
+                        .addClass(liked.servcomp);
+                    $('.info .options .flag')
+                        .removeClass('Canada Europe France Germany Russia Belorussia USA Ukraine ASIA')
+                        .addClass(liked.servcountry);
+                    $('.info .options .physics')
+                        .removeClass('a p')
+                        .addClass(liked.servphys);
+                    $('.info .options .option-title .text').remove();
+                    // добавляем подписи к иконкам
+                    if (liked.servcomp === 'l') {
+                        $('#complexity')
+                            .append('<span class="text">' + easytext + '</span>');
+                    } else {
+                        if (liked.servcomp === 'n') {
+                            $('#complexity')
+                                .append('<span class="text">' + normaltext + '</span>');
+                        } else {
+                            if (liked.servcomp === 'h') {
+                                $('#complexity')
+                                    .append('<span class="text">' + hardtext + '</span>');
+                            }
+                        }
+                    }
+
+                    if (liked.servcountry === 'Canada') {
+                        $('#country')
+                            .append('<span class="text">' + canadatext + '</span>');
+                    } else {
+                        if (liked.servcountry === 'Europe') {
+                            $('#country')
+                                .append('<span class="text">' + europetext + '</span>');
+                        } else {
+                            if (liked.servcountry === 'France') {
+                                $('#country')
+                                    .append('<span class="text">' + francetext + '</span>');
+                            } else {
+                                if (liked.servcountry === 'Germany') {
+                                    $('#country')
+                                        .append('<span class="text">' + germanytext + '</span>');
+                                } else {
+                                    if (liked.servcountry === 'Russia') {
+                                        $('#country')
+                                            .append('<span class="text">' + russiatext + '</span>');
+                                    } else {
+                                        if (liked.servcountry === 'Belorussia') {
+                                            $('#country')
+                                                .append('<span class="text">' + belorussiatext + '</span>');
+                                        } else {
+                                            if (liked.servcountry === 'USA') {
+                                                $('#country')
+                                                    .append('<span class="text">' + usatext + '</span>');
+                                            } else {
+                                                if (liked.servcountry === 'Ukraine') {
+                                                    $('#country')
+                                                        .append('<span class="text">' + ukrainetext + '</span>');
+                                                } else {
+                                                    if (liked.servcountry === 'ASIA') {
+                                                        $('#country')
+                                                            .append('<span class="text">' + asiatext + '</span>');
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (liked.servphys === 'a') {
+                        $('#physics')
+                            .append('<span class="text">' + agarphystext + '</span>');
+                    } else {
+                        if (liked.servphys === 'p') {
+                            $('#physics')
+                                .append('<span class="text">' + petriphystext + '</span>');
+                        }
+                    }
+                });
+            });
+        $('.mode-item')
+            .click(function() {
+                if ($(this).hasClass('active') && $(this).hasClass('hide')) {
+                    $('.mode-header').removeClass('close');
+                    $('.mode-item').removeClass('hide');
+                    ModeWrapper();
+                } else {
+                    $(".info-landing").hide();
+                    $(".info-select-mode").show();
+                    var item = {
+                        fcolor: $(this)
+                            .attr('data-fcolor'),
+                        ocolor: $(this)
+                            .attr('data-ocolor'),
+                        icon: $(this)
+                            .children('span')
+                            .html(),
+                        title: $(this)
+                            .attr('data-name'),
+                        discr: $(this)
+                            .attr('data-info')
+                    }; // Массив данных для режимов
+                    $('.mode-item')
+                        .removeClass('active hide'); // Чистим всех активных
+                    $(this)
+                        .addClass('active', function() {}); // Присваиваем последнему
+                    $('.info .info-mode-icon')
+                        .css("background", item.ocolor); // Красим большой кружок
+                    $('.info .info-mode-icon')
+                        .html(item.icon)
+                        .css("color", item.fcolor); // Красним иконку
+                    $('.info h2')
+                        .html(item.title); // Меняем заголовок
+                    $('.info .discription')
+                        .html(item.discr); // Меняем описание
+                    $(this)
+                        .addClass('hide'); // Открываем список серверов
+                    if ($(this)
+                        .hasClass('hide')) {
+                        $('.wrapper .mode-header strong')
+                            .html(backtogmselectortext); // Меняем заголовок
+                        $('.mode-header .liked')
+                            .hide(); // Удаляем избранное
+                        $('.mode-header')
+                            .addClass('close')
+                            .css({ cursor: "pointer" });
+                        $('.mode-header .back')
+                            .css({ display: "flex" }); // Стрелочка назад
+                        $('.mode-item .mode-text')
+                            .empty()
+                            .hide(); // Сокращаем названия режимов
+                        $('#mode-wrapper')
+                            .css({ width: "32px" });
+                        //.css({overflow-y: "hidden"}); // Анимируем
+                        $('#mode-wrapper ul')
+                            .css({ width: "36px" }); // Анимируем
+                        $('#server-wrapper')
+                            .css({ display: "block", width: "320px" }); // Анимируем сервера
+                        PrintInfoServer();
+                        // Выводим названия серверов
+                        $(".server-list .server-item")
+                            .on('click', function() {
+                                ServerActiveRemove();
+                                // Чистим всех активных
+                                $(this)
+                                    .addClass('active');
+                                var thisServ = {
+                                    count: $(this).attr('data-country'),
+                                    name: $(this).attr('data-name'),
+                                    comp: $(this).attr('data-comp'),
+                                    phys: $(this).attr('data-phys'),
+                                    liked: $(this).attr('data-liked'),
+                                    nowplay: $(this).attr('data-nowplay'),
+                                    maxplay: $(this).attr('data-maxplay')
+                                };
+                                // Массив данных для серверов
+                                $('.info .options .complexity')
+                                    .removeClass('l n h')
+                                    .addClass(thisServ.comp);
+                                $('.info .options .flag')
+                                    .removeClass('Canada Europe France Germany Russia Belorussia USA Ukraine ASIA')
+                                    .addClass(thisServ.count);
+                                $('.info .options .physics')
+                                    .removeClass('a p')
+                                    .addClass(thisServ.phys);
+                                $('.info .options .option-title .text').remove();
+                                if (thisServ.comp === 'l') {
+                                    $('#complexity')
+                                        .append('<span class="text">' + easytext + '</span>');
+                                } else {
+                                    if (thisServ.comp === 'n') {
+                                        $('#complexity')
+                                            .append('<span class="text">' + normaltext + '</span>');
+                                    } else {
+                                        if (thisServ.comp === 'h') {
+                                            $('#complexity')
+                                                .append('<span class="text">' + hardtext + '</span>');
+                                        }
+                                    }
+                                }
+
+                                if (thisServ.count === 'Canada') {
+                                    $('#country')
+                                        .append('<span class="text">' + canadatext + '</span>');
+                                } else {
+                                    if (thisServ.count === 'Europe') {
+                                        $('#country')
+                                            .append('<span class="text">' + europetext + '</span>');
+                                    } else {
+                                        if (thisServ.count === 'France') {
+                                            $('#country')
+                                                .append('<span class="text">' + francetext + '</span>');
+                                        } else {
+                                            if (thisServ.count === 'Germany') {
+                                                $('#country')
+                                                    .append('<span class="text">' + germanytext + '</span>');
+                                            } else {
+                                                if (thisServ.count === 'Russia') {
+                                                    $('#country')
+                                                        .append('<span class="text">' + russiatext + '</span>');
+                                                } else {
+                                                    if (thisServ.count === 'Belorussia') {
+                                                        $('#country')
+                                                            .append('<span class="text">' + belorussiatext + '</span>');
+                                                    } else {
+                                                        if (thisServ.count === 'USA') {
+                                                            $('#country')
+                                                                .append('<span class="text">' + usatext + '</span>');
+                                                        } else {
+                                                            if (thisServ.count === 'Ukraine') {
+                                                                $('#country')
+                                                                    .append('<span class="text">' + ukrainetext + '</span>');
+                                                            } else {
+                                                                if (thisServ.count === 'ASIA') {
+                                                                    $('#country')
+                                                                        .append('<span class="text">' + asiatext + '</span>');
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (thisServ.phys === 'a') {
+                                    $('#physics')
+                                        .append('<span class="text">' + agarphystext + '</span>');
+                                } else {
+                                    if (thisServ.phys === 'p') {
+                                        $('#physics')
+                                            .append('<span class="text">' + petriphystext + '</span>');
+                                    }
+                                }
+                            });
+                    } // Все действия связанные с выбором сервера
+                }
+            });
+        $('.mode-header')
+            .click(function() {
+                if ($(this).hasClass('close')) {
+                    $(this).removeClass('close');
+                    ModeWrapper();
+                }
+                if ($(this).hasClass('closeliked')) {
+                    $(this).removeClass('closeliked');
+                    ModeWrapper();
+                }
+            });
+        // Возврат из серверов в режимы игры
+        // ПОПАПЫ
+        // $('.button.skin').click(function() {
+        //     $(this).toggleClass('active');
+        //     var ElemLeft = $(this).offset().left;
+        //     var ElemWidth = $(this).width();
+        //     var ElemCenter = ElemLeft - 141 + (ElemWidth / 2) + 5;
+        //     $(this).toggleClass('skin-open', function() {
+        //         if ($(this).hasClass('skin-open')) {
+        //             $('.skin-content')
+        //                 .show().css({ left: ElemCenter });
+        //         } else {
+        //             $('.skin-content')
+        //                 .hide();
+        //         }
+        //     });
+        // });
+        $('.button.skin').click(function() {
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ElemCenter = ElemLeft - (ElemWidth / 2);
+            $('.skin-content').toggle().css({ left: ElemCenter });
+            $('.button.skin').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.skin-group').length) {
+                $('.skin-content').hide();
+                $('.button.skin').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // $('.button.auth').click(function() {
+        //     $(this).toggleClass('active');
+        //     var ElemLeft = $(this).offset().left;
+        //     var ElemWidth = $(this).width();
+        //     var ElemCenter = ElemLeft - 141 + (ElemWidth / 2) + 5;
+        //     var AuthElemCenter = ElemLeft - 142 + (ElemWidth / 2);
+        //     $(this).toggleClass('auth-open', function() {
+        //         if ($(this).hasClass('auth-open')) {
+        //             if ($(this).hasClass('auth')) {
+        //                 $('.auth-content')
+        //                     .show().css({ left: AuthElemCenter });
+        //             } else {
+        //                 $('.auth-content')
+        //                     .show().css({ left: ElemCenter });
+        //             }
+        //             $('.button.auth svg path')
+        //                 .attr('fill', '#ffffff');
+        //         } else {
+        //             $('.auth-content')
+        //                 .hide();
+        //             $('.button.auth svg path')
+        //                 .attr('fill', '#333333');
+
+        //         }
+        //     });
+        // });
+        $('.button.auth.menu').click(function() {
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ContainerWidth = $('.auth-content.menu').width();
+            var ElemCenter = ElemLeft - (ContainerWidth / 2) + (ElemWidth / 2) - 5;
+            if ($('.auth-content.menu').hasClass('auth')) {
+                $('.auth-content.auth.menu').toggle().css({ left: ElemCenter });
+            } else {
+                $('.auth-content.menu').toggle().css({ left: ElemCenter });
+            }
+            $('.button.auth.menu').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.auth-group').length) {
+                $('.auth-content.menu').hide();
+                $('.button.auth.menu').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        $('.button.auth.game').click(function() {
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ContainerWidth = $('.auth-content.game').width();
+            var ElemCenter = ElemLeft - (ContainerWidth / 2) + (ElemWidth / 2) - 5;
+            if ($('.auth-content.game').hasClass('auth')) {
+                $('.auth-content.auth.game').toggle().css({ left: ElemCenter });
+            } else {
+                $('.auth-content.game').toggle().css({ left: ElemCenter });
+            }
+            $('.button.auth.game').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.auth-group.game').length) {
+                $('.auth-content.game').hide();
+                $('.button.auth.game').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // $('.button.lang').click(function() {
+        //     $(this).toggleClass('active');
+        //     var ElemLeft = $(this).offset().left;
+        //     var ElemWidth = $(this).width();
+        //     var ElemCenter = ElemLeft - 101 + (ElemWidth / 2) + 5;
+        //             if ($(this)
+        //                 .hasClass('active')) {
+        //                 $('.lang-content')
+        //                     .show()
+        //                     .css({ left: ElemCenter });
+        //                 $('.button.lang svg path')
+        //                     .attr('fill', '#ffffff');
+        //             } else {
+        //                 $('.lang-content')
+        //                     .hide();
+        //                 $('.button.lang svg path')
+        //                     .attr('fill', '#333333');
+        //             }
+        // });
+        $('.button.lang').click(function() {
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ElemCenter = ElemLeft - 100 + (ElemWidth / 2);
+            $('.lang-content').toggle().css({ left: ElemCenter });
+            $('.button.lang').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.lang-group').length) {
+                $('.lang-content').hide();
+                $('.button.lang').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // Выбор языка
+        $('.lang-content li label').click(function() {
+            $('.lang-content li')
+                .removeClass('active');
+            $(this)
+                .parent()
+                .addClass('active');
+        });
+        // Фильтр
+        // $('.server-filtr').click(function() {
+        //     $(this)
+        //         .toggleClass('active');
+        //     $(this)
+        //         .toggleClass('filtr-open', function() {
+        //             if ($(this)
+        //                 .hasClass('filtr-open')) {
+        //                 $('.filtr-content')
+        //                     .css({ display: "flex" });
+        //             } else {
+        //                 $('.filtr-content')
+        //                     .hide();
+        //             }
+        //         });
+        $('figure .filtr-item label').click(function() {
+            $(this).click(function() {
+                $(this)
+                    .parent()
+                    .toggleClass('active');
+            });
+        });
+        // });
+        $('.server-filtr').click(function() {
+            $('.filtr-content').toggle();
+            $('.server-filtr').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.server-wrapper').length) {
+                $('.filtr-content').hide();
+                $('.server-filtr').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // Выбор логина
+        // $('.avatar.left').click(function() {
+        //     $(this).toggleClass('active');
+        //     var ElemTop = $(this).position().top;
+        //     $(this)
+        //         .toggleClass('ava-open', function() {
+        //             if ($(this)
+        //                 .hasClass('ava-open')) {
+        //                 $('.ava-content')
+        //                     .show().css({ top: ElemTop + 50 });
+        //             } else {
+        //                 $('.ava-content')
+        //                     .hide();
+        //             }
+        //         });
+        // });
+        $('.avatar.left').click(function() {
+            $('.ava-content').toggle();
+            $('.avatar.left').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.info-nickname').length) {
+                $('.ava-content').hide();
+                $('.avatar.left').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        $('.ava-content li label').click(function() {
+            $('.ava-content li')
+                .removeClass('active');
+            $(this)
+                .parent()
+                .addClass('active');
+        });
+        //Избранное
+        $('.liked').click(function() {
+            if ($(this).hasClass('auth')) {
+                $(this).removeClass('active');
+            } else {
+                $('.liked').toggleClass('active');
+                $('.liked-content').toggle();
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.mode-header').length) {
+                        $('.liked-content').hide();
+                        $('.liked').removeClass('active');
+                    }
+                    e.stopPropagation();
+                });
+            }
+        });
+        // Октрываем топ 20 и скрываем кнопку при широких форматах
+        function CloseRight() {
+            OptionClose();
+            TopClose();
+            FriendClose();
+        }
+
+        function TopOpen() {
+            $('.button.call-top')
+                .toggleClass('active');
+            $('.button.call-top')
+                .toggleClass('top-open', function() {
+                    if ($('.button.call-top')
+                        .hasClass('top-open')) {
+                        $('.top')
+                            .show()
+                            .css({ right: 0 });
+                    } else {
+                        $('.top')
+                            .hide();
+                    }
+                });
+        }
+
+        function TopClose() {
+            $('.button.call-top')
+                .removeClass('active top-open');
+            $('.top')
+                .hide();
+        }
+        $('.button.call-top').click(function() {
+            CloseRight();
+            TopOpen();
+        });
+        $('#top-close').click(function() {
+            TopClose();
+        });
+        //Опции
+        function OptionOpen() {
+            $('.button.call-option')
+                .toggleClass('active');
+            $('.button.call-option')
+                .toggleClass('option-open', function() {
+                    if ($('.button.call-option')
+                        .hasClass('option-open')) {
+                        $('.option')
+                            .show()
+                            .css({ right: 0 });
+                    } else {
+                        $('.option')
+                            .hide();
+                    }
+                });
+        }
+
+        function OptionClose() {
+            $('.button.call-option')
+                .removeClass('active option-open');
+            $('.option')
+                .hide();
+        }
+        $('.button.call-option')
+            .click(function() {
+                CloseRight();
+                OptionOpen();
+            });
+        $('#option-close').click(function() {
+            OptionClose();
+        });
+        //Друзья
+        function FriendOpen() {
+            $('.button.call-friend')
+                .toggleClass('active');
+            $('.button.call-friend')
+                .toggleClass('friend-open', function() {
+                    if ($(this)
+                        .hasClass('friend-open')) {
+                        $('.friend')
+                            .show()
+                            .css({ right: 0 });
+                    } else {
+                        $('.friend')
+                            .hide();
+                    }
+                });
+        };
+
+        function FriendClose() {
+            $('.button.call-friend')
+                .removeClass('active friend-open');
+            $('.friend')
+                .hide();
+        };
+        $('.button.call-friend')
+            .click(function() {
+                CloseRight();
+                FriendOpen();
+            });
+        $('#friend-close')
+            .click(function() {
+                FriendClose();
+            });
+        $('.info, .mode').click(function() {
+            CloseRight();
+        });
+        // $('.friend-item')
+        //     .click(function() {
+        //         $('.friend-item:not(this)').removeClass('active');
+        //         if ($(this).hasClass('active')) {
+        //             $(this).removeClass('active');
+        //         } else {
+        //             $(this).addClass('active');
+        //             var ElemTop = $(this).offset().top;
+        //             $('.friend-item-content')
+        //                 .css({
+        //                     display: "flex",
+        //                     left: 27,
+        //                     top: ElemTop - 50
+        //                 });
+        //         }
+        //     });
+        // попапы друзей
+        $('.friend-item').click(function() {
+            var ElemTop = $(this).position().top;
+            $('.friend-item-content').toggle().css({ top: ElemTop + 50 });
+            $('.friend-item').removeClass('active');
+            $(this).toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.friend-content-container').length) {
+                $('.friend-item-content').hide();
+                $('.friend-item').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // $('.friend-item')
+        //     .on('click', function() {
+        //         $('.friend-item')
+        //             .removeClass('active');
+        //         $(this)
+        //             .addClass('active');
+        //         var ElemTop = $(this).offset().top;
+        //         if ($(this).hasClass('active')) {
+        //             $('.friend-item-content')
+        //                 .css({
+        //                     display: "flex",
+        //                     left: 27,
+        //                     top: ElemTop - 50
+        //                 });
+        //             $(this).click(function() {
+        //                 $(this)
+        //                     .removeClass('active');
+        //                 $('.friend-item-content')
+        //                     .hide();
+        //             });
+        //         } else {
+        //         }
+        //     });
+        // Широкоформатный экран
+        // Меню открыли/закрыли
+        $('#nav-button').click(function() {
+            if ($('#nav').hasClass('open')) {
+                NavClose();
+            } else {
+                NavOpen();
+            }
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#nav').length) {
+                NavClose();
+            }
+            e.stopPropagation();
+        });
+        // Красим инпуты на лету 
+        $('.option-color')
+            .on('input', function() {
+                var element = $(this).val();
+                $(this)
+                    .css({ background: '#' + element });
+            });
+        // СКРИПТЫ В ИГРЕ
+        $('#chat .chat-open').click(function() {
+            $('#chat .chat-container')
+                .toggle(function() {
+                    $(this)
+                        .toggleClass('close');
+                    $('.chat-header .chat-resize')
+                        .toggle();
+                    if ($(this)
+                        .hasClass('close')) {
+                        $('#chat .chat-open').html('<i class="mdi mdi-arrow-up mdi-18px">');
+                        $('#chatlog').height('0');
+                    } else {
+                        $('#chat .chat-open').html('<i class="mdi mdi-close mdi-18px">');
+                        $('#chatlog').height('352px');
+                    }
+                });
+        });
+        $('#map .map-open').click(function() {
+            $('#map .map-container')
+                .toggle(function() {
+                    $(this)
+                        .toggleClass('close');
+                    if ($(this)
+                        .hasClass('close')) {
+                        $('#map .map-open').html('<i class="mdi mdi-arrow-up mdi-18px">');
+                        //Здесь код растягивания блока
+                    } else {
+                        $('#map .map-open').html('<i class="mdi mdi-close mdi-18px">');
+                    }
+                });
+        });
+        $('#top-game .top-game-open').click(function() {
+            $('#top-game .top-game-container')
+                .toggle(function() {
+                    $(this)
+                        .toggleClass('close');
+                    if ($(this)
+                        .hasClass('close')) {
+                        $('#top-game .top-game-open').html('<i class="mdi mdi-arrow-down mdi-18px">');
+                    } else {
+                        $('#top-game .top-game-open').html('<i class="mdi mdi-close mdi-18px">');
+                    }
+                });
+        });
+        // $('#top-game .top-game-open').click(function() {
+        //             $(this)
+        //                 .toggleClass('close');
+        //             if ($(this)
+        //                 .hasClass('close')) {
+        //                 $('#top-game .top-game-container').css({display:'none'});
+        //                 $('#top-game')
+        //                     .css({ height: '40px;', border: 'solid 1px rgba(0,0,0,0)' });
+        //                 $('#top-game .top-game-open').html('<i class="mdi mdi-arrow-bottom-left mdi-18px">').css({ display: 'flex' });
+        //                 $(this).css({border: 'solid 1px rgba(0,0,0,0.1)' });
+        //                 //Здесь код растягивания блока
+        //             } else {
+        //                 $('#top-game .top-game-container').css({display:'flex'});
+        //                 $('#top-game .top-game-open').html('<i class="mdi mdi-close mdi-18px">');
+        //                 $('#top-game').css({ right: '10px', border: 'solid 1px rgba(0,0,0,0.1)' });
+        //                 $(this).css({border: 'solid 1px rgba(0,0,0,0)' });
+        //             }
+        // });
+        $('#how').click(function() {
+            $('.overflow').toggle();
+            $(this).css({});
+        });
+        $('.button.select').click(function() {
+            if (ingamelistopen) {
+                ingamelistopen = false;
+            } else {
+                ingamelistopen = true;
+            }
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ContainerWidth = $('.select-content').width();
+            var ElemCenter = ElemLeft - (ContainerWidth / 2) + (ElemWidth / 2);
+            if ($('.select-content').hasClass('select')) {
+                $('.select-content.select').toggle().css({ left: ElemCenter });
+            } else {
+                $('.select-content').toggle().css({ left: ElemCenter });
+            }
+            $('.button.select').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.select-group').length) {
+                $('.select-content').hide();
+                $('.button.select').removeClass('active');
+                ingamelistopen = false;
+            }
+            e.stopPropagation();
+            $('.my-skin li label').click(function() {
+                $('.my-skin li')
+                    .removeClass('active');
+                $(this)
+                    .parent()
+                    .addClass('active');
+            });
+            $('.my-sticks li label').click(function() {
+                $('.my-sticks li')
+                    .removeClass('active');
+                $(this)
+                    .parent()
+                    .addClass('active');
+            });
+        });
+
+
+        // Кнопки открытия попапов
+
+        // Геймовер авторизованный
+        $('.gameover-auth').click(function() {
+            var ElemLeft = $(this).position().left;
+            var ElemWidth = $(this).width();
+            var ElemCenter = ElemLeft - 100 + (ElemWidth / 2);
+            $('.gameover-ava-content-auth').toggle().css({ left: ElemCenter });
+            $('.gameover-auth').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.stat-game-header').length) {
+                $('.gameover-ava-content-auth').hide();
+                $('.gameover-auth').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        $('.gameover-ava-content-auth li label').click(function() {
+            $('.gameover-ava-content-auth li')
+                .removeClass('active');
+            $(this)
+                .parent()
+                .addClass('active');
+        });
+        // Геймовер неавторизовнный
+        // Дропдаун топа
+        $('#dead-top-time').click(function() {
+            $('#dead-top-time-content').toggle().css({ right: 10 });
+            $(this).toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.serv-header').length) {
+                $('#dead-top-time-content').hide();
+                $('#dead-top-time').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        $('#dead-top-time-content li label').click(function() {
+            $('#dead-top-time-content li')
+                .removeClass('active');
+            $(this)
+                .parent()
+                .addClass('active');
+        });
+        // Дропдаун цвета игрока на главной
+        $('.color.right.color-player-set').click(function() {
+            $('.color-player-variants').toggle().css({ right: 10, top: 60 });
+            $('.color.right.color-player-set').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.info-nickname').length) {
+                $('.color-player-variants').hide();
+                $('.color.right.color-player-set').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        $('.color.right.color-team-set').click(function() {
+            $('.color-team-variants').toggle().css({ right: 10, top: 60 });
+            $('.color.right.color-team-set').toggleClass('active');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.info-nickname').length) {
+                $('.color-team-variants').hide();
+                $('.color.right.color-team-set').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // Дропдаун статистики сервера в игре
+        $('#serv-stat').click(function() {
+            $('.serv-stat-content').toggle();
+            $('#serv-stat').toggleClass('active');
+            if ($("#ingameserverstats").css("display") != "none") {
+                loadstats('today', true);
+            }
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.serv-stat-modal').length) {
+                $('.serv-stat-content').hide();
+                $('#serv-stat').removeClass('active');
+            }
+            e.stopPropagation();
+        });
+        // Дробдаун времени в статистике сервера
+        $('#top-time').click(function() {
+            $('#top-time-content').toggle();
+            $('#top-time').toggleClass('open');
+        });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.serv-stat-header').length) {
+                $('#top-time-content').hide();
+                $('#top-time').removeClass('open');
+            }
+            e.stopPropagation();
+        });
+        $('#top-time-content li label').click(function() {
+            $('#top-time-content li')
+                .removeClass('active');
+            $('#top-time-content').toggle();
+            $('#top-time').toggleClass('open');
+            $(this)
+                .parent()
+                .addClass('active');
+            var timeitem = $(this).children('span').html();
+            $('#top-time span').html(timeitem);
+        });
+
+    });
